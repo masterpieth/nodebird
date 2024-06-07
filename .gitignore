@@ -1,0 +1,4 @@
+/.env
+/.prettierrc
+/config
+/node_modules
