@@ -29,3 +29,13 @@ exports.uploadPost = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.deletePost = async (req, res, next) => {
+	try {
+		const result = await Post.destroy({ where: { id: req.params.id } });
+		res.json(result);
+	} catch (err) {
+		console.error(err);
+		next(err);
+	}
+};
