@@ -26,3 +26,20 @@ exports.unfollow = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.change_nick = async (req, res, next) => {
+	try {
+		const result = await User.update(
+			{
+				nick: req.body.nick,
+			},
+			{
+				where: { id: req.params.id },
+			}
+		);
+		res.json(result);
+	} catch (err) {
+		console.error(err);
+		next(err);
+	}
+};
