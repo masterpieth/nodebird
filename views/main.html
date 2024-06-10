@@ -26,6 +26,7 @@
           <button class="btn">검색</button>
         </form>
         {% for twit in twits %}
+          {% set index = loop.index0 %}
           <div class="twit">
             <input type="hidden" value="{{twit.User.id}}" class="twit-user-id">
             <input type="hidden" value="{{twit.id}}" class="twit-id">
@@ -35,6 +36,11 @@
             {% endif %}
             {% if twit.User.id === user.id %}
               <button class="twit-delete">삭제하기</button>
+            {% endif %}
+            {% if likes[index] and likes[index].includes(user.id) %}
+              <button class="twit-unlike">좋아요취소</button>
+            {% else %}
+              <button class="twit-like">좋아요</button>
             {% endif %}
             <div class="twit-content">{{twit.content}}</div>
             {% if twit.img %}
@@ -100,5 +106,35 @@
         }
       })
     })
+    document.querySelectorAll('.twit-like').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const postId = tag.parentNode.querySelector('.twit-id').value;
+          axios.post(`/post/${postId}/like`, {'userId': myId.value})
+            .then(() => {
+              location.reload();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      });
+    });
+    document.querySelectorAll('.twit-unlike').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const postId = tag.parentNode.querySelector('.twit-id').value;
+          axios.delete(`/post/${myId.value}/${postId}/unlike`)
+            .then(() => {
+              location.reload();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      });
+    });
   </script>
 {% endblock %}

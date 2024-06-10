@@ -52,7 +52,11 @@ class User extends Sequelize.Model {
 			as: "Followings",
 			through: "Follow",
 		});
-		db.User.belongsToMany(db.Post, { through: "PostLikes" });
+		db.User.belongsToMany(db.Post, {
+			foreignKey: "userId",
+			as: "LikedPosts",
+			through: "PostLike",
+		});
 	}
 }
 

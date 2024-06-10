@@ -1,4 +1,5 @@
-const { Post, Hashtag } = require("../models");
+const { Post, Hashtag, sequelize } = require("../models");
+const PostLike = sequelize.models.PostLike;
 
 exports.afterUploadImage = (req, res) => {
 	console.log(req.file);
@@ -33,6 +34,30 @@ exports.uploadPost = async (req, res, next) => {
 exports.deletePost = async (req, res, next) => {
 	try {
 		const result = await Post.destroy({ where: { id: req.params.id } });
+		res.json(result);
+	} catch (err) {
+		console.error(err);
+		next(err);
+	}
+};
+
+exports.likePost = async (req, res, next) => {
+	try {
+		const result = await PostLike.findOrCreate({
+			where: { userId: req.body.userId, postId: req.params.id },
+		});
+		res.json(result);
+	} catch (err) {
+		console.error(err);
+		next(err);
+	}
+};
+
+exports.unlikePost = async (req, res, next) => {
+	try {
+		const result = await PostLike.destroy({
+			where: { userId: req.params.userId, postId: req.params.postId },
+		});
 		res.json(result);
 	} catch (err) {
 		console.error(err);
